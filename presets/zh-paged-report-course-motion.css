@@ -1,0 +1,60 @@
+/* Shared motion preset for the zh-paged-report-course profile.
+   Use for page switch and progressive reveal only. */
+
+.course-page {
+  opacity: 0;
+  transform: translateY(var(--zh-course-motion-distance, 10px));
+  visibility: hidden;
+  pointer-events: none;
+  transition:
+    opacity var(--zh-course-motion-duration, 220ms) var(--zh-course-motion-easing, cubic-bezier(0.16, 1, 0.3, 1)),
+    transform var(--zh-course-motion-duration, 220ms) var(--zh-course-motion-easing, cubic-bezier(0.16, 1, 0.3, 1)),
+    visibility 0s linear var(--zh-course-motion-duration, 220ms);
+}
+
+.course-page.active {
+  opacity: 1;
+  transform: translateY(0);
+  visibility: visible;
+  pointer-events: auto;
+}
+
+.page-inner {
+  overscroll-behavior: contain;
+  scroll-behavior: auto;
+}
+
+/* Progressive reveal hooks */
+.page-content > *,
+.page-head > *,
+.page-feedback > * {
+  opacity: 0;
+  transform: translateY(8px);
+  transition:
+    opacity var(--zh-course-motion-duration, 220ms) var(--zh-course-motion-easing, cubic-bezier(0.16, 1, 0.3, 1)),
+    transform var(--zh-course-motion-duration, 220ms) var(--zh-course-motion-easing, cubic-bezier(0.16, 1, 0.3, 1));
+}
+
+.course-page.active .page-content > *,
+.course-page.active .page-head > *,
+.course-page.active .page-feedback > * {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* Quiz state feedback should feel like teaching feedback, not decoration. */
+.quiz-feedback {
+  opacity: 0;
+  transform: translateY(6px);
+  transition:
+    opacity var(--zh-course-motion-duration, 220ms) var(--zh-course-motion-easing, cubic-bezier(0.16, 1, 0.3, 1)),
+    transform var(--zh-course-motion-duration, 220ms) var(--zh-course-motion-easing, cubic-bezier(0.16, 1, 0.3, 1));
+}
+
+.quiz-feedback.is-visible,
+.quiz-feedback.show {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* Never use hard cuts or large slides for this profile. */

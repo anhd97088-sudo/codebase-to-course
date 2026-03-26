@@ -1,0 +1,71 @@
+<!-- Shared page shell for the zh-paged-report-course profile.
+     This is the fixed Chinese paged code course scaffold.
+     Keep it editorial and lecture-like: quiet container, clear leading page number, calm page head.
+     Do not replace it with a branded cover, a dashboard-style big card, or a different page architecture. -->
+
+<nav class="course-nav" aria-label="Course progress">
+  <span class="course-nav-title">zh-paged-report-course</span>
+  <div class="course-dots" role="tablist" aria-label="Pages">
+    <!-- Dots map to the fixed page order below -->
+  </div>
+</nav>
+
+<main class="course-pages" data-profile="zh-paged-report-course">
+  <!-- Every page must be driven by an explicit schema entry:
+       pageNum, role, title, copy, contentNodes, archetype. -->
+  <!-- Archetypes:
+       opener-page
+       framing-page
+       structure-map-page
+       code-lesson-page
+       exercise-page
+       recap-page -->
+
+  <!-- Visual contract:
+       - page-card is a quiet editorial sheet, not the main visual hero.
+       - page-number should live as a leading layer before page-head, not as a heavy ::before stamp.
+       - page-head establishes the title hierarchy; page-content carries the lesson body.
+       - page-feedback is a reserved closing zone for quiz feedback or final cues.
+       - translation and quiz cards should follow the block hierarchy in the recipe, not default app-card styling.
+       - term definitions should be rendered through a shared tooltip layer, not ad-hoc inline bubbles. -->
+
+  {{pages_from_page_defs}}
+</main>
+
+<!-- Shared tooltip root:
+     <div class="tooltip" id="tooltip" role="tooltip" aria-hidden="true"></div>
+
+     Interaction contract:
+     - `.term` nodes should be keyboard-focusable.
+     - hover and focus may open the tooltip.
+     - click / tap should toggle the tooltip for that term.
+     - clicking the same term again closes it.
+     - clicking outside closes it.
+     - clicking the term must not immediately bubble into a document-level close handler.
+-->
+
+<!-- Required per-page scaffold:
+     <section class="course-page" data-page-index="0" data-page-role="opening" data-page-archetype="opener-page">
+       <div class="page-inner">
+         <article class="page-card" data-page-num="01">
+           <div class="page-leading">
+             <span class="page-number">01</span>
+           </div>
+           <div class="page-head">...</div>
+           <div class="page-content">...</div>
+           <div class="page-feedback" aria-live="polite">...</div>
+         </article>
+       </div>
+     </section>
+
+     page-content is the primary teaching area.
+     page-feedback is reserved for quiz / answer-state feedback.
+     page-leading is the page-number / opener layer and should appear before the page-head.
+-->
+
+<!-- Prohibited homepage patterns:
+     topbar + brand cover
+     hero-grid
+     stats-grid
+     project overview cover
+     free-form page order -->

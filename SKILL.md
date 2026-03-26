@@ -1,11 +1,11 @@
 ---
 name: codebase-to-course
-description: "Turn any codebase into a beautiful, interactive single-page HTML course that teaches how the code works to non-technical people. Use this skill whenever someone wants to create an interactive course, tutorial, or educational walkthrough from a codebase or project. Also trigger when users mention 'turn this into a course,' 'explain this codebase interactively,' 'teach this code,' 'interactive tutorial from code,' 'codebase walkthrough,' 'learn from this codebase,' or 'make a course from this project.' This skill produces a stunning, self-contained HTML file with scroll-based navigation, animated visualizations, embedded quizzes, and code-with-plain-English side-by-side translations."
+description: "Turn any codebase into a beautiful, interactive single-page HTML course that teaches how the code works to non-technical people. Use this skill whenever someone wants to create an interactive course, tutorial, or educational walkthrough from a codebase or project. Also trigger when users mention 'turn this into a course,' 'use codebase-to-course on this repo,' 'explain this codebase interactively,' 'teach this code,' 'interactive tutorial from code,' 'codebase walkthrough,' 'learn from this codebase,' or 'make a course from this project.' This skill produces a stunning, self-contained HTML file with scroll-based navigation, animated visualizations, embedded quizzes, and Chinese explanations that keep key English terms visible. Optional profiles such as zh-paged-report-course add a Chinese-first paged-report presentation layer without changing the base skill."
 ---
 
 # Codebase-to-Course
 
-Transform any codebase into a stunning, interactive single-page HTML course. The output is a single self-contained HTML file (no dependencies except Google Fonts) that teaches how the code works through scroll-based modules, animated visualizations, embedded quizzes, and plain-English translations of code.
+Transform any codebase into a stunning, interactive single-page HTML course. The output is a single self-contained HTML file (no dependencies except Google Fonts) that teaches how the code works through scroll-based modules, animated visualizations, embedded quizzes, and Chinese explanations of code that keep key English technical terms intact.
 
 ## First-Run Welcome
 
@@ -13,14 +13,124 @@ When the skill is first triggered and the user hasn't specified a codebase yet, 
 
 > **I can turn any codebase into an interactive course that teaches how it works — no coding knowledge required.**
 >
+> The course content will be written in Chinese by default, with important technical terms kept in English where helpful.
+>
 > Just point me at a project:
 > - **A local folder** — e.g., "turn ./my-project into a course"
 > - **A GitHub link** — e.g., "make a course from https://github.com/user/repo"
-> - **The current project** — if you're already in a codebase, just say "turn this into a course"
+> - **The current project** — if you're already in a codebase, just say "turn this into a course" or "use codebase-to-course on this repo"
 >
-> I'll read through the code, figure out how everything fits together, and generate a beautiful single-page HTML course with animated diagrams, plain-English code explanations, and interactive quizzes. The whole thing runs in your browser — no setup needed.
+> I'll read through the code, figure out how everything fits together, and generate a beautiful single-page HTML course with animated diagrams, Chinese code explanations, and interactive quizzes. The whole thing runs in your browser — no setup needed.
 
 If the user provides a GitHub link, clone the repo first (`git clone <url> /tmp/<repo-name>`) before starting the analysis. If they say "this codebase" or similar, use the current working directory.
+
+## Skill Layers
+
+This skill has two layers:
+
+1. **Base skill** — the default `codebase-to-course` behavior. Keep this intact unless the user explicitly asks for a different presentation layer.
+2. **Profile** — an opt-in output template that changes the visual, pagination, and page-order defaults while keeping the same course-building workflow.
+
+The current profile is `zh-paged-report-course`. Use it only when the user explicitly asks for a Chinese paged code course / lecture-page style course, or names the profile directly.
+
+### When to use the `zh-paged-report-course` profile
+
+Treat the profile as active when the user says any of the following:
+
+- "中文分页报告"
+- "中文分页报告课件"
+- "讲解页"
+- "分页讲解"
+- "分页课件"
+- "中文优先的课程页"
+- "zh-paged-report-course"
+- "use the Chinese paged report template"
+
+When the profile is active:
+
+- Preserve the base course-building process from Zara's `codebase-to-course`
+- Apply the profile rules in `profiles/zh-paged-report-course.md`
+- Use the profile-specific typography, pagination, motion, page composition, and validation rules from `references/`
+- Do not promote the profile into the default global behavior unless the user explicitly asks for that change
+- Skip generic discovery prompts that would normally be used to choose a style or presentation layer
+- Run the preflight alignment check from the profile before generating any course HTML
+- Follow the profile's fixed teaching path and homepage skeleton instead of inventing a new opening flow
+- Keep the visual shell fixed and let page density vary with codebase complexity; do not fill sparse projects with extra wrappers, branded covers, or alternate navigation just to make them look dense
+- Do not force a 4-page cap or a 5-8 module cap when the profile is active; split or merge pages within the canonical teaching path so each page stays readable and the shell stays unchanged
+- Treat the output as a **Chinese paged code course**: a reusable teaching profile, not a one-off HTML report.
+- Keep the reference course feel, but let the codebase complexity decide how many pages each canonical anchor needs.
+
+### Profile enforcement: `zh-paged-report-course`
+
+When this profile is explicitly selected, treat it as a **forced template**, not a loose style hint.
+
+#### profile selected => skip generic discovery
+
+Do not ask the user any of the following once the profile is active:
+
+- whether they want the whole project or a single page
+- what visual style they prefer
+- whether they want a Chinese paged report or not
+- any 1/2/3-style branching question about presentation
+- exploratory "choose the format" prompts that would delay execution
+
+#### Must-not-ask list
+
+If the profile is active, do not ask:
+
+- "whole project or one page?"
+- "what style do you want?"
+- "do you want Chinese paged report?"
+- "which layout do you want?"
+- "should I use the paged template?"
+- any equivalent presentation-selection question
+
+#### Fixed teaching path
+
+Use this teaching path for the profile. The path is ordered, but the number of pages under each anchor is elastic and should scale with codebase complexity:
+
+1. **先结论**
+2. **再结构**
+3. **再数据流**
+4. **再边界 / 风险 / 下一步**
+
+Do not reorder these four anchors. Additional pages may deepen the topic, but they cannot come before the anchors above. When the codebase is sparse, fewer pages are fine; when it is dense, split the anchors into more pages instead of overfilling a single one.
+The implementation should be driven by an explicit `pageSchema` / `pageDefs` object so the order is data-driven, not inferred from document flow.
+The schema should choose from fixed page archetypes (`opener-page`, `framing-page`, `structure-map-page`, `code-lesson-page`, `exercise-page`, `recap-page`) rather than inventing a new shell per project.
+
+#### Preflight alignment check
+
+Before generating the HTML, output these four fields exactly:
+
+1. `profile:`
+2. `首页模板逻辑:`
+3. `拆解顺序:`
+4. `本次不会再出现的通用提问:`
+
+If any of the four is not aligned with the profile, correct it before starting generation.
+
+### Public layer files
+
+When `zh-paged-report-course` is active, use these shared files as the source of truth:
+
+- `tokens/zh-paged-report-course.css` — fixed typography, spacing, width, corner radius, and motion variables
+- `templates/zh-paged-report-course-shell.html` — fixed homepage skeleton and page mapping shell
+- `templates/zh-paged-report-course-pages.md` — fixed page-by-page content recipe for opener, structure, data flow, and boundary pages
+- `presets/zh-paged-report-course-motion.css` — fixed page-switch motion preset
+- `checklists/zh-paged-report-course.md` — fixed preflight and postflight QA gate
+
+Use them in this order:
+
+1. load tokens
+2. apply shell/template
+3. apply page recipes
+4. apply motion preset
+5. run the checklist gate
+
+The page recipe file should describe each page with schema fields such as `pageNum`, `role`, `title`, `copy`, and `contentNodes`, so the builder can render a fixed opener-first / recap-last sequence without inventing a different homepage or page order.
+The recipe must also map each page to a fixed archetype and narration contract, so the builder knows whether it is rendering an opener, a framing page, a code lesson, an exercise, or a recap.
+
+If the profile is active and any of these files are missing or out of sync, stop and repair the profile layer first. Do not let the base skill invent a different homepage or page recipe when this profile is selected.
 
 ## Who This Is For
 
@@ -84,9 +194,11 @@ Not every codebase needs all 7. A simple CLI tool might only need 4-5 modules. A
 
 **The key principle:** Every module should connect back to a practical skill — steering AI, debugging, making decisions. If a module doesn't help the learner DO something better, cut it or reframe it until it does.
 
+**Language policy:** Write the course in Chinese by default. Keep the original English technical terms on first use or when they are the canonical code/API words, and pair them with Chinese explanations instead of translating them away. This makes the course easier to learn from now and easier to use with English docs and AI later.
+
 **Each module should contain:**
 - 3-6 screens (sub-sections that flow within the module)
-- At least one code-with-English translation
+- At least one code-with-Chinese explanation
 - At least one interactive element (quiz, visualization, or animation)
 - One or two "aha!" callout boxes with universal CS insights
 - A metaphor that grounds the technical concept in everyday life — but NEVER reuse the same metaphor across modules, and NEVER default to the "restaurant" metaphor (it's overused). Pick metaphors that organically fit the specific concept. The best metaphors feel *inevitable* for the concept, not forced.
@@ -136,7 +248,7 @@ People's eyes glaze over text blocks. The course should feel closer to an infogr
 - A sequence of steps → **flow diagram with arrows** or **numbered step cards**
 - "Component A talks to Component B" → **animated data flow** or **group chat visualization**
 - "This file does X, that file does Y" → **visual file tree with annotations** or **icon + one-liner badges**
-- Explaining what code does → **code↔English translation block** (not a paragraph *about* the code)
+- Explaining what code does → **code↔Chinese explanation block** (not a paragraph *about* the code)
 - Comparing two approaches → **side-by-side columns** with visual contrast
 
 **Visual breathing room:**
@@ -144,8 +256,8 @@ People's eyes glaze over text blocks. The course should feel closer to an infogr
 - Alternate between full-width visuals and narrow text blocks to create rhythm
 - Every module should have at least one "hero visual" — a diagram, animation, or interactive element that dominates the screen and teaches the core concept at a glance
 
-### Code ↔ English Translations
-Every code snippet gets a side-by-side plain English translation. Left panel: real code from the project with syntax highlighting. Right panel: line-by-line plain English explaining what each line does. This is the single most valuable teaching tool for non-technical learners.
+### Code ↔ Chinese Explanations
+Every code snippet gets a side-by-side Chinese explanation. Left panel: real code from the project with syntax highlighting. Right panel: line-by-line Chinese explaining what each line does, while keeping the important English technical terms visible. This is the single most valuable teaching tool for non-technical learners.
 
 **Critical: No horizontal scrollbars on code.** All code must use `white-space: pre-wrap` so it wraps instead of scrolling. This is a course for non-technical people, not an IDE — readability beats preserving indentation structure.
 
@@ -166,7 +278,7 @@ Follow what actually happens when the learner does something they already do eve
 Use "aha!" callout boxes for universal CS insights. Use humor where natural (not forced). Give components personality — they're "characters" in a story, not abstract boxes on a diagram.
 
 ### Glossary Tooltips — No Term Left Behind
-Every technical term (API, DOM, callback, middleware, etc.) gets a dashed-underline tooltip on first use in each module. Hover on desktop or tap on mobile to see a 1-2 sentence plain-English definition. The learner should never have to leave the page to Google a term. This is the difference between a course that *says* it's for non-technical people and one that actually *is*.
+Every technical term (API, DOM, callback, middleware, etc.) gets a dashed-underline tooltip on first use in each module. Hover on desktop or tap on mobile to see a 1-2 sentence Chinese definition, with the English term preserved when it helps the learner connect to docs and AI prompts. The learner should never have to leave the page to Google a term. This is the difference between a course that *says* it's for non-technical people and one that actually *is*.
 
 **Be extremely aggressive with tooltips.** If there is even a 1% chance a non-technical person doesn't know a word, tooltip it. This includes:
 - Software names they might not know (Blender, GIMP, Audacity, etc.)
@@ -175,7 +287,7 @@ Every technical term (API, DOM, callback, middleware, etc.) gets a dashed-underl
 - Infrastructure terms (PATH, pip, namespace, entry point, etc.)
 - Acronyms — ALWAYS tooltip acronyms on first use
 
-**The vocabulary IS the learning.** One of the key goals is for learners to acquire the precise technical vocabulary they need to communicate with AI coding agents. Each tooltip should teach the term in a way that helps the learner USE it in their own instructions — e.g., "A **flag** is an option you add to a command to change its behavior — like adding '--json' to get structured data instead of plain text. When talking to AI, you'd say 'add a flag for verbose output.'"
+**The vocabulary IS the learning.** One of the key goals is for learners to acquire the precise technical vocabulary they need to communicate with AI coding agents. Each tooltip should teach the term in a way that helps the learner USE it in their own instructions — e.g., "A **flag** is an option you add to a command to change its behavior — like adding '--json' to get structured data instead of plain text. When talking to AI, you'd say 'add a flag for verbose output.'" In the Chinese course, give the explanation in Chinese, but keep the English technical word visible.
 
 **Cursor:** Use `cursor: pointer` on terms (not `cursor: help`). The question-mark cursor feels clinical — a pointer feels clickable and inviting.
 
@@ -202,6 +314,7 @@ The goal of learning is practical application — being able to *do something* w
 - Correct answers get brief reinforcement of the underlying principle ("Exactly! This works because...")
 - Never punitive, never score-focused. No "You got 3/5!" — the quiz is a thinking exercise, not an exam
 - Wrong answer explanations should teach something new, not just say "wrong, the answer was B"
+- Write the prompt and feedback in Chinese, while keeping technical terms like `API`, `DOM`, `callback`, `JSON`, and `CLI` in English when they matter.
 
 **How many quizzes:** One per module, placed at the end after the learner has seen all the content. 3-5 questions per quiz. Each question should make the learner pause and *think*, not just pick the obvious answer.
 
@@ -234,7 +347,7 @@ Translation blocks use `overflow: hidden` for code wrapping. If tooltips use `po
 The most common failure is under-tooltipping. Non-technical learners don't know terms like REPL, JSON, flag, entry point, PATH, pip, namespace, function, class, module, PR, E2E, or even software names like Blender/GIMP. **Rule of thumb:** if a term wouldn't appear in everyday conversation with a non-technical friend, tooltip it. Err heavily on the side of too many. BUT: don't tooltip terms the user already knows well from their domain (e.g., AI/ML concepts for someone in AI).
 
 ### Walls of Text
-The course looks like a textbook instead of an infographic. This happens when you write more than 2-3 sentences in a row without a visual break. Every screen must be at least 50% visual. Convert any list of 3+ items into cards, any sequence into step cards or flow diagrams, any code explanation into a code↔English translation block.
+The course looks like a textbook instead of an infographic. This happens when you write more than 2-3 sentences in a row without a visual break. Every screen must be at least 50% visual. Convert any list of 3+ items into cards, any sequence into step cards or flow diagrams, any code explanation into a code↔Chinese translation block.
 
 ### Recycled Metaphors
 Using "restaurant" or "kitchen" for everything. Every module needs its own metaphor that feels inevitable for that specific concept. If you catch yourself reaching for the same metaphor twice, stop and find one that fits the concept organically.
@@ -261,4 +374,4 @@ A module with only text and code blocks, no interactivity. Every module needs at
 The `references/` directory contains detailed implementation specs. Read them when you reach the relevant phase:
 
 - **`references/design-system.md`** — Complete CSS custom properties, color palette, typography scale, spacing system, shadows, animations, scrollbar styling. Read this before writing any CSS.
-- **`references/interactive-elements.md`** — Implementation patterns for every interactive element: drag-and-drop quizzes, multiple-choice quizzes, code↔English translations, group chat animations, message flow visualizations, architecture diagrams, pattern cards, callout boxes. Read this before building any interactive elements.
+- **`references/interactive-elements.md`** — Implementation patterns for every interactive element: drag-and-drop quizzes, multiple-choice quizzes, code↔Chinese explanations, group chat animations, message flow visualizations, architecture diagrams, pattern cards, callout boxes. Read this before building any interactive elements.

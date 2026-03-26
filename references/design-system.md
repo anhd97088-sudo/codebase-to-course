@@ -62,6 +62,7 @@ Complete CSS design tokens for the course. Copy this entire `:root` block into t
 - Even-numbered modules use `--color-bg`, odd-numbered use `--color-bg-warm` (alternating backgrounds create visual rhythm)
 - Actor colors should be visually distinct from each other and from the accent
 - Code blocks always use `--color-bg-code` with light text
+- Lecture-style page titles should remain horizontally readable: widen the title area before forcing extra line breaks, and keep titles restrained enough that they do not become poster stacks.
 
 ---
 
@@ -111,6 +112,36 @@ Complete CSS design tokens for the course. Copy this entire `:root` block into t
 - Body text: `--text-base` or `--text-lg`, font-body, `--leading-normal`
 - Code: `--text-sm`, font-mono
 - Labels/badges: `--text-xs`, font-mono, uppercase, letter-spacing 0.05em
+
+## Profile Override: `zh-paged-report-course`
+
+The Chinese paged code course should feel like an editorial lesson sheet, not a glossy app card.
+Keep the main page calm and light, with the page number as a leading layer before the page head.
+The page shell should be present but quiet; the lesson hierarchy should do the visual work.
+
+### Editorial page contract
+
+- Use a calm sheet surface rather than a heavy frosted app card.
+- Treat the page number as a separate leading layer, not as a decorative corner stamp.
+- Keep the page head, page body, and feedback area visually distinct.
+- Make the main lesson block feel stable and readable, not over-elevated.
+- Let the support blocks be lighter than the core lesson block.
+
+### Token guidance
+
+- `--zh-course-page-sheet-surface` should stay soft and translucent, not opaque and heavy.
+- `--zh-course-page-card-shadow` should be minimal or none; the page should not rely on deep shadow for identity.
+- `--zh-course-page-leading-gap` should create air between the number layer and the page head.
+- `--zh-course-page-number-size` should remain a clear leading element, but the color should stay faint.
+- `--zh-course-block-primary-*` should be reserved for translation, major lesson blocks, big maps, and quiz cards.
+- `--zh-course-block-secondary-*` should be used for meta, snippet intro, summary, and mid-weight support panels.
+- `--zh-course-block-tertiary-*` should be used for callout, revisit, helper, and feedback notes.
+- `meta-box` should prefer a compact tag row or pill row so file location, layer, and purpose read as three separate ideas instead of one long sentence.
+- Code blocks should expose internal logic with restrained syntax color, not as flat monochrome text.
+- Explanation rows (`exp-line`) should visibly segment the reading so the code side and explanation side feel paired.
+- The accent system should stay mostly blue; green should only appear where semantic success or boundary state is truly needed.
+- Avoid decorative gradients that make helper or callout blocks feel like a separate visual theme.
+- `.term` should feel like a lightweight reading aid: subtle underline, a clear deep-blue text treatment, and tooltip tone that supports the lesson without stealing the page.
 
 ---
 
@@ -401,3 +432,201 @@ For code blocks on the dark `--color-bg-code` background:
 .code-attr     { color: #F9E2AF; }  /* yellow — HTML attributes */
 .code-value    { color: #A6E3A1; }  /* green — attribute values */
 ```
+
+---
+
+## Profile Override: `zh-paged-report-course`
+
+Use this override when the output should feel like a **Chinese paged code course**, not a poster-like English demo page or a one-off paged report.
+
+### Typography contract
+
+```css
+:root {
+  /* Chinese-first lecture pages */
+  --font-display: 'SF Pro Display', 'PingFang SC', -apple-system, BlinkMacSystemFont, sans-serif;
+  --font-body:    'SF Pro Text', 'PingFang SC', -apple-system, BlinkMacSystemFont, sans-serif;
+
+  /* Lecture-scale title stack */
+  --zh-course-hero-title-size:   clamp(26px, 2.8vw, 34px);
+  --zh-course-hero-title-line:   1.16;
+  --zh-course-hero-title-weight: 560;
+  --zh-course-hero-title-width:   16ch;
+
+  --zh-course-page-title-size:    clamp(22px, 2.8vw, 34px);
+  --zh-course-page-title-line:    1.12;
+  --zh-course-page-title-weight:  620;
+  --zh-course-page-title-width:    22ch;
+
+  --zh-course-body-size:          16px;
+  --zh-course-body-line:          1.68;
+  --zh-course-body-weight:        400;
+  --zh-course-body-color:         rgba(29, 29, 31, 0.68);
+  --zh-course-body-width:         52ch;
+
+  --zh-course-lead-size:          17px;
+  --zh-course-lead-line:          1.72;
+  --zh-course-lead-weight:        400;
+  --zh-course-lead-color:         rgba(29, 29, 31, 0.72);
+  --zh-course-lead-width:         52ch;
+
+  --zh-course-helper-size:        10px;
+  --zh-course-helper-line:        1.45;
+  --zh-course-helper-weight:      600;
+  --zh-course-helper-color:       rgba(29, 29, 31, 0.34);
+  --zh-course-helper-width:       38ch;
+
+  --zh-course-snippet-intro-size: 17px;
+  --zh-course-snippet-intro-line: 1.68;
+  --zh-course-snippet-intro-weight: 400;
+  --zh-course-snippet-intro-color: rgba(29, 29, 31, 0.72);
+  --zh-course-snippet-intro-width: 54ch;
+
+  --zh-course-snippet-meta-size: 11px;
+  --zh-course-snippet-meta-line: 1.45;
+  --zh-course-snippet-meta-weight: 600;
+  --zh-course-snippet-meta-color: rgba(29, 29, 31, 0.48);
+
+  --zh-course-callout-title-size: 18px;
+  --zh-course-callout-title-line: 1.18;
+  --zh-course-callout-title-weight: 650;
+  --zh-course-callout-title-color: rgba(29, 29, 31, 0.88);
+
+  --zh-course-callout-body-size: 15px;
+  --zh-course-callout-body-line: 1.62;
+  --zh-course-callout-body-weight: 400;
+  --zh-course-callout-body-color: rgba(29, 29, 31, 0.68);
+
+  --zh-course-learn-list-size: 15px;
+  --zh-course-learn-list-line: 1.62;
+  --zh-course-learn-list-weight: 400;
+  --zh-course-learn-list-color: rgba(29, 29, 31, 0.70);
+
+  --zh-course-exp-line-size:      14px;
+  --zh-course-exp-line-height:    1.56;
+  --zh-course-exp-line-color:     rgba(29, 29, 31, 0.64);
+  --zh-course-exp-line-width:     50ch;
+
+  --zh-course-page-number-size:   clamp(34px, 4vw, 56px);
+  --zh-course-page-number-weight: 700;
+  --zh-course-page-number-color:  rgba(29, 29, 31, 0.10);
+}
+```
+
+**Typography rules:**
+- Title width should be generous enough to read horizontally; avoid forcing many short lines.
+- Main title should feel like a lecture headline, not a poster headline.
+- Page title, homepage title, and recap title should share the same hierarchy system; only their role changes.
+- Page number is decorative and faint, never the main read.
+- Kicker / auxiliary label stays weak and secondary.
+- Lead and body copy should feel like course prose, not memo text.
+- Explain the page with balanced line lengths, not with a dense document column.
+
+### Pagination contract
+
+```css
+.course-pages {
+  height: calc(100dvh - var(--nav-h));
+  overflow: hidden;
+}
+
+.course-page {
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+  transform: translateY(10px);
+  transition:
+    opacity 220ms ease,
+    transform 220ms ease,
+    visibility 0s linear 220ms;
+}
+
+.course-page.active {
+  opacity: 1;
+  visibility: visible;
+  pointer-events: auto;
+  transform: translateY(0);
+}
+
+.page-inner {
+  height: 100%;
+  overflow: auto;
+  overscroll-behavior: contain;
+}
+```
+
+**Rules:**
+- Default to page-based navigation, not long-page anchor scrolling.
+- Let long pages scroll inside the active page only.
+- Reset the active page's internal scroll to top on every page switch.
+- Do not let inactive pages remain scrollable or clickable.
+- The shell must stay fixed even when page density changes.
+
+### Narrative contract
+
+The profile should read like a **Chinese paged code course**:
+
+- opener first, recap last
+- judgments before details
+- code lesson pages explain why now before what the code does
+- every serious code page includes snippet intro, metadata, learn list, explanation pairing, callout, and revisit cue
+- exercise pages close the loop and turn explanation into memory
+- recap pages end with a useful judgment, not a pile of bullets
+
+### Motion contract
+
+```css
+.course-page {
+  transition:
+    opacity 220ms ease,
+    transform 220ms ease;
+}
+```
+
+**Rules:**
+- Use light fade + small translate only.
+- Keep the transition in the 180ms to 280ms range.
+- Never add flash, ghosting, layout jump, or scroll-through behavior.
+- Reveal page content progressively after activation rather than only swapping whole pages.
+
+### Validation contract
+
+Use this checklist for the profile before shipping:
+
+1. Longest page is fully readable to the end.
+2. Switching pages resets the inner scroll to the top.
+3. First-page title reads horizontally and does not feel poster-like.
+4. Auxiliary kicker stays weak and secondary.
+5. Page transitions feel gentle, not abrupt.
+6. The course never falls back to long-page anchor scrolling.
+7. Code lesson pages contain thesis, why-now, snippet meta, learn list, explanation pairing, and revisit cue.
+8. Quiz pages close the loop on understanding instead of acting as decoration.
+
+### Homepage skeleton contract
+
+For the `zh-paged-report-course` profile, keep the homepage in lecture-page form:
+
+- weak kicker
+- lecture-scale headline
+- short lead paragraph
+- optional secondary side rail if it clarifies the opening thesis
+- no branded overview shell
+- no hero-grid / stats-grid cover layout
+
+This is a presentation rule, not a content rule: the page still teaches the codebase, but it opens like a lecture instead of a promo page.
+
+### Public layer files
+
+For the `zh-paged-report-course` profile, these files are the reusable source of truth:
+
+- [`tokens/zh-paged-report-course.css`](/Users/mac/.codex/skills/codebase-to-course/tokens/zh-paged-report-course.css)
+- [`templates/zh-paged-report-course-shell.html`](/Users/mac/.codex/skills/codebase-to-course/templates/zh-paged-report-course-shell.html)
+- [`templates/zh-paged-report-course-pages.md`](/Users/mac/.codex/skills/codebase-to-course/templates/zh-paged-report-course-pages.md)
+- [`presets/zh-paged-report-course-motion.css`](/Users/mac/.codex/skills/codebase-to-course/presets/zh-paged-report-course-motion.css)
+- [`checklists/zh-paged-report-course.md`](/Users/mac/.codex/skills/codebase-to-course/checklists/zh-paged-report-course.md)
+
+The profile should reference these instead of inventing new typography, shell, page recipe, or motion values per project.
+The visual shell is fixed to the reference course; only the content density may scale up or down with project complexity.
+The opener may grow a compact supporting band, but it should still read as a lecture opener rather than a promo cover.

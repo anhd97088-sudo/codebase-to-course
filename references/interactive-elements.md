@@ -3,7 +3,7 @@
 Implementation patterns for every interactive element type used in courses. Pick the elements that best serve each module's teaching goal.
 
 ## Table of Contents
-1. [Code ↔ English Translation Blocks](#code--english-translation-blocks)
+1. [Code ↔ 中文 Explanation Blocks](#code--chinese-explanation-blocks)
 2. [Multiple-Choice Quizzes](#multiple-choice-quizzes)
 3. [Drag-and-Drop Matching](#drag-and-drop-matching)
 4. [Group Chat Animation](#group-chat-animation)
@@ -23,15 +23,131 @@ Implementation patterns for every interactive element type used in courses. Pick
 
 ---
 
-## Code ↔ English Translation Blocks
+## `zh-paged-report-course` Teaching Block Contract
 
-The most important teaching element. Shows real code from the project on the left and a plain English translation on the right, line by line.
+For the Chinese paged code course profile, a serious lesson page should feel like a mini teaching unit:
+
+- a thesis or judgment line
+- a short "why now" intro
+- snippet metadata
+- a reading guide
+- a short learn list
+- a code ↔ Chinese explanation pairing
+- an aha / callout block
+- a revisit note for future requirements
+
+Use these blocks to teach the learner how to steer AI and how to revisit the code later.
+Do not let the page collapse into a code block plus one summary sentence.
+The explanation should go beyond "what it does" and cover role, mechanism, meaning, and action.
+
+### `exp-line` rhythm
+
+When the lesson needs a stronger teacher-led cadence, prefer a row-based explanation structure:
+
+- a short line label or segment label
+- one focused explanation sentence
+- one follow-up sentence that deepens the point
+
+Keep the rows visually separated so the learner can feel the rhythm of the reading.
+Do not let the explanation side become one long paragraph wall.
+Use this rhythm when the page should feel like guided reading, not loose commentary.
+
+### Snippet metadata pattern
+
+Place a compact metadata row near the snippet intro when the profile is active:
+
+- file location
+- layer / role
+- what this code is for
+
+This metadata is there to anchor the snippet in the architecture, not to decorate the page.
+
+### Term-definition pattern
+
+Use `.term` + tooltip definitions as a stable course support layer whenever a high-value term would otherwise block understanding.
+
+Good tooltip copy should answer:
+
+- what this term is
+- what role it plays in this project
+- why the learner needs it now
+
+Coverage should follow the page role:
+
+- opener: global concepts
+- framing: reading-path concepts
+- structure-map: layer and role words
+- code-lesson: technical blockers inside the snippet
+- recap: boundary and capability terms
+
+Do not leave only one isolated tooltip in the whole course. The learner should feel that the course is helping them decode the vocabulary of the system.
+
+### Page feedback pattern
+
+Reserve a small feedback area for:
+
+- quiz responses
+- "what to remember" callouts
+- next-step nudges
+
+The feedback area should close the loop on understanding. It is part of the lesson, not a separate decoration.
+
+### Quiz affordance pattern
+
+For `exercise-page` and `recap-page`, the quiz should feel like a checkpoint:
+
+- each option should read like a radio choice
+- selected, correct, and wrong states should be clearly distinguishable
+- the feedback area should have a stable slot so the page does not jump when the answer appears
+- the feedback copy should state the learning point, not just praise or correction
+- the quiz should close the loop on judgment, not only demonstrate a control
+
+## `zh-paged-report-course` Interaction Contract
+
+When the Chinese paged code course profile is active, the interaction layer should feel like a lesson being opened page by page, not like a static report being scrolled.
+
+### Required interaction behavior
+
+- Dot navigation and wheel / keyboard paging remain available.
+- Only one page is active at a time.
+- Inactive pages stay hidden and non-interactive.
+- Switching pages resets the active page to the top.
+- Page content reveals progressively after activation so the page feels like it starts talking after it opens.
+- Quiz states must show learning feedback, not just a pressed button.
+- Keep quiz feedback visually calm but clearly legible; it should feel like a checkpoint verdict, not a toast.
+
+### Required element roles
+
+- `page-head` sets the page thesis and reading frame.
+- `page-content` contains the lesson body and code explanation blocks.
+- `page-feedback` is reserved for quiz / answer-state feedback.
+- Tooltips explain terms, but they should stay lightweight and secondary.
+- Dot navigation moves between pages, not between arbitrary sections.
+- `page-number` should read as a leading layer that introduces the page before the headline starts.
+- `page-content` should prioritize primary lesson blocks first, then secondary support blocks, then tertiary cues.
+
+### Progressive reveal rule
+
+Use progressive reveal to make the lesson feel alive:
+
+- page headline first
+- then the lead / framing copy
+- then the code lesson / support blocks
+- then the exercise or recap feedback
+
+Do not rely on a single hard swap. The page should feel like it opens in layers.
+
+---
+
+## Code ↔ 中文 Explanation Blocks
+
+The most important teaching element. Shows real code from the project on the left and a Chinese explanation on the right, line by line, while keeping key English technical terms visible.
 
 **HTML:**
 ```html
 <div class="translation-block animate-in">
   <div class="translation-code">
-    <span class="translation-label">CODE</span>
+    <div class="code-prefix">代码 · /LIB/DB/ANALYSIS-RUNS.TS</div>
     <pre><code>
 <span class="code-line"><span class="code-keyword">const</span> response = <span class="code-keyword">await</span> <span class="code-function">fetch</span>(url, {</span>
 <span class="code-line">  <span class="code-property">method</span>: <span class="code-string">'POST'</span>,</span>
@@ -40,12 +156,29 @@ The most important teaching element. Shows real code from the project on the lef
     </code></pre>
   </div>
   <div class="translation-english">
-    <span class="translation-label">PLAIN ENGLISH</span>
+    <span class="translation-label">中文解释</span>
     <div class="translation-lines">
-      <p class="tl">Send a request to the URL and wait for a response...</p>
-      <p class="tl">We're sending data (POST), not just asking for it (GET)...</p>
-      <p class="tl">Include our API key so the server knows who we are...</p>
-      <p class="tl">End of the request setup.</p>
+      <div class="exp-line">
+        <div class="exp-line-label">1</div>
+        <div class="exp-line-copy">
+          <p>先发起请求，并等待结果回来。</p>
+          <p>这一行先把整条调用链启动起来。</p>
+        </div>
+      </div>
+      <div class="exp-line">
+        <div class="exp-line-label">2-3</div>
+        <div class="exp-line-copy">
+          <p>这里在补齐请求方法和认证头。</p>
+          <p>它真正承担的是“把请求组织成服务端能接受的格式”。</p>
+        </div>
+      </div>
+      <div class="exp-line">
+        <div class="exp-line-label">4</div>
+        <div class="exp-line-copy">
+          <p>到这里，请求配置完成。</p>
+          <p>以后要改鉴权或请求方式，先回看这一组配置。</p>
+        </div>
+      </div>
     </div>
   </div>
 </div>
@@ -72,6 +205,23 @@ The most important teaching element. Shows real code from the project on the lef
   position: relative;
   overflow-x: hidden;  /* NO horizontal scrollbar — ever */
 }
+.code-prefix {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  margin-bottom: var(--space-4);
+  color: rgba(255, 255, 255, 0.56);
+  font-size: var(--text-xs);
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+.code-keyword { color: var(--zh-course-code-keyword, #6fb7ff); }
+.code-function { color: var(--zh-course-code-function, #9fe870); }
+.code-string { color: var(--zh-course-code-string, #ffd45e); }
+.code-property { color: var(--zh-course-code-property, #c8ccd4); }
+.code-operator { color: var(--zh-course-code-operator, #e8edf4); }
+.code-comment { color: var(--zh-course-code-comment, rgba(200, 204, 212, 0.54)); }
 .translation-code pre,
 .translation-code code {
   white-space: pre-wrap;       /* wrap long lines instead of scrolling */
@@ -96,6 +246,29 @@ The most important teaching element. Shows real code from the project on the lef
 }
 .translation-english .translation-label {
   color: var(--color-text-muted);
+}
+.exp-line {
+  display: grid;
+  grid-template-columns: 72px minmax(0, 1fr);
+  gap: var(--space-3);
+  padding: var(--space-3) 0;
+  border-top: 1px solid var(--zh-course-exp-line-divider, rgba(60, 60, 67, 0.08));
+}
+.exp-line:first-child {
+  border-top: 0;
+  padding-top: 0;
+}
+.exp-line-label {
+  color: var(--zh-course-exp-line-label-color, var(--color-info));
+  font-family: var(--font-mono);
+  font-size: var(--zh-course-exp-line-label-size, var(--text-xs));
+  font-weight: var(--zh-course-exp-line-label-weight, 700);
+}
+.exp-line-copy p {
+  margin: 0;
+}
+.exp-line-copy p + p {
+  margin-top: 6px;
 }
 /* Responsive: stack vertically on mobile */
 @media (max-width: 768px) {
@@ -518,6 +691,41 @@ Full-system diagram where hovering/clicking a component shows a description tool
 
 Shows how different layers (e.g., HTML/CSS/JS, or data/logic/UI) build on each other. Three tabs switch between views.
 
+---
+
+## Profile Contract: `zh-paged-report-course`
+
+When the Chinese paged-report profile is active, the interaction layer should follow a fixed teaching order and should not re-open the usual exploratory flow.
+
+**Fixed page mapping order:**
+
+1. 先结论
+2. 再结构
+3. 再数据流
+4. 再边界 / 风险 / 下一步
+
+The order is fixed, but the number of pages under each anchor is elastic. Dense projects may split one anchor across more than one page; sparse projects may keep adjacent anchors lighter as long as the shell stays unchanged.
+
+**Homepage skeleton:**
+
+- weak kicker
+- lecture-scale headline
+- short lead paragraph
+- optional compact support band if it helps orient the learner
+- no branded overview shell
+- no hero-grid / stats-grid cover
+
+**Preflight alignment check:**
+
+Before generating the page set, output these four items exactly:
+
+1. `profile:`
+2. `首页模板逻辑:`
+3. `拆解顺序:`
+4. `本次不会再出现的通用提问:`
+
+If these four fields are not aligned, do not start generating the course yet.
+
 **HTML:**
 ```html
 <div class="layer-demo">
@@ -735,7 +943,7 @@ For annotating config files, permissions, or settings:
 
 ## Glossary Tooltips
 
-The most important accessibility feature for non-technical learners. Any technical term in the course text should be wrapped in a tooltip that shows a plain-English definition on hover (desktop) or tap (mobile). The learner never has to leave the page or Google anything.
+The most important accessibility feature for non-technical learners. Any technical term in the course text should be wrapped in a tooltip that shows a Chinese definition on hover (desktop) or tap (mobile), while keeping the original English term visible when useful. The learner never has to leave the page or Google anything.
 
 **HTML — mark up terms inline:**
 ```html
@@ -751,10 +959,12 @@ The most important accessibility feature for non-technical learners. Any technic
   border-bottom: 1.5px dashed var(--color-accent-muted);
   cursor: pointer;    /* NOT cursor: help — pointer feels clickable and inviting */
   position: relative;
+  color: var(--color-info);
+  font-weight: 500;
 }
 .term:hover, .term.active {
   border-bottom-color: var(--color-accent);
-  color: var(--color-accent);
+  color: var(--color-info);
 }
 
 /* The tooltip bubble — uses position: fixed and is appended to document.body
@@ -807,6 +1017,7 @@ The most important accessibility feature for non-technical learners. Any technic
 ```javascript
 // Tooltip container — appended to body so it's never clipped
 let activeTooltip = null;
+let activeTerm = null;
 
 function positionTooltip(term, tip) {
   const rect = term.getBoundingClientRect();
@@ -836,6 +1047,7 @@ document.querySelectorAll('.term').forEach(term => {
   const tip = document.createElement('span');
   tip.className = 'term-tooltip';
   tip.textContent = term.dataset.definition;
+  term.setAttribute('tabindex', '0');
 
   // Hover for desktop
   term.addEventListener('mouseenter', () => {
@@ -846,39 +1058,61 @@ document.querySelectorAll('.term').forEach(term => {
     positionTooltip(term, tip);
     requestAnimationFrame(() => tip.classList.add('visible'));
     activeTooltip = tip;
+    activeTerm = term;
   });
 
   term.addEventListener('mouseleave', () => {
     tip.classList.remove('visible');
     setTimeout(() => { if (!tip.classList.contains('visible')) tip.remove(); }, 150);
-    activeTooltip = null;
+    if (activeTooltip === tip) {
+      activeTooltip = null;
+      activeTerm = null;
+    }
+  });
+
+  term.addEventListener('focus', () => {
+    if (activeTooltip && activeTooltip !== tip) {
+      activeTooltip.classList.remove('visible');
+      activeTooltip.remove();
+    }
+    positionTooltip(term, tip);
+    requestAnimationFrame(() => tip.classList.add('visible'));
+    activeTooltip = tip;
+    activeTerm = term;
+  });
+
+  term.addEventListener('blur', () => {
+    tip.classList.remove('visible');
+    setTimeout(() => { if (!tip.classList.contains('visible')) tip.remove(); }, 150);
+    if (activeTooltip === tip) {
+      activeTooltip = null;
+      activeTerm = null;
+    }
   });
 
   // Tap for mobile
   term.addEventListener('click', (e) => {
+    e.preventDefault();
     e.stopPropagation();
     if (activeTooltip && activeTooltip !== tip) {
       activeTooltip.classList.remove('visible');
       activeTooltip.remove();
     }
-    if (tip.classList.contains('visible')) {
-      tip.classList.remove('visible');
-      tip.remove();
-      activeTooltip = null;
-    } else {
-      positionTooltip(term, tip);
-      requestAnimationFrame(() => tip.classList.add('visible'));
-      activeTooltip = tip;
-    }
+    positionTooltip(term, tip);
+    requestAnimationFrame(() => tip.classList.add('visible'));
+    activeTooltip = tip;
+    activeTerm = term;
   });
 });
 
 // Close tooltips when clicking elsewhere
-document.addEventListener('click', () => {
+document.addEventListener('click', (event) => {
+  if (event.target.closest('.term')) return;
   if (activeTooltip) {
     activeTooltip.classList.remove('visible');
     activeTooltip.remove();
     activeTooltip = null;
+    activeTerm = null;
   }
 });
 ```
@@ -1043,3 +1277,134 @@ For sequences that would otherwise be a numbered paragraph list. Visual, scannab
 }
 .step-body p { margin: var(--space-1) 0 0; color: var(--color-text-secondary); font-size: var(--text-sm); }
 ```
+
+---
+
+## Profile Pattern: `zh-paged-report-course`
+
+Use this pattern when the course should feel like a **Chinese paged report / lecture page** instead of a long scrolling article.
+The shell, typography, and motion are fixed to the reference course; only the amount of content inside those roles may scale with codebase complexity.
+
+### Page Shell
+
+```html
+<nav class="nav">
+  <div class="nav-inner">
+    <div class="nav-title">Course Title</div>
+    <div class="module-rail" id="pageDots" aria-label="页面导航"></div>
+  </div>
+</nav>
+
+<main class="course-pages" id="coursePages" aria-live="polite"></main>
+```
+
+```css
+.course-pages {
+  position: relative;
+  height: calc(100dvh - var(--nav-h));
+  overflow: hidden;
+}
+
+.course-page {
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+  transform: translateY(10px);
+  transition: opacity 220ms ease, transform 220ms ease, visibility 0s linear 220ms;
+  will-change: opacity, transform;
+}
+
+.course-page.active {
+  opacity: 1;
+  visibility: visible;
+  pointer-events: auto;
+  transform: translateY(0);
+}
+
+.page-inner {
+  height: 100%;
+  overflow: auto;
+  overscroll-behavior: contain;
+  scrollbar-gutter: stable;
+}
+```
+
+**Rules:**
+- Exactly one page is active at a time.
+- Active page is visible and interactive.
+- Inactive pages are hidden and cannot be scrolled.
+- Long content stays inside the page, not in the document body.
+- The visible structure should still feel like the reference even when the content budget is lighter.
+
+### Page Switching
+
+```javascript
+let currentPage = 0;
+
+function setPage(next) {
+  const clamped = Math.max(0, Math.min(pages.length - 1, next));
+  currentPage = clamped;
+
+  pages.forEach((page, index) => {
+    const active = index === currentPage;
+    page.classList.toggle('active', active);
+    page.setAttribute('aria-hidden', active ? 'false' : 'true');
+    if (active) {
+      const inner = page.querySelector('.page-inner');
+      if (inner) inner.scrollTop = 0;
+    }
+  });
+
+  dots.forEach((dot, index) => {
+    dot.classList.toggle('active', index === currentPage);
+  });
+}
+```
+
+**Rules:**
+- Page dots are page state, not scroll anchors.
+- `setPage()` is the single source of truth for active page selection.
+- On every page change, the new page scroll position must reset to top.
+- Do not use `scrollIntoView()` as the main paging mechanism for this profile.
+- Do not add an alternate paging UI when a page has less content; keep the same shell and let density shrink instead.
+- When a section is near the bottom, allow a small paging threshold instead of requiring a pixel-perfect bottom lock; this prevents long sections from trapping downward movement.
+
+### Motion
+
+```css
+.course-page {
+  transition: opacity 220ms ease, transform 220ms ease;
+}
+```
+
+**Rules:**
+- Use only a light fade plus a small translate.
+- Keep the transition between 180ms and 280ms.
+- Do not introduce flashes, ghosting, layout jump, or scroll bleed.
+- Do not compensate for lighter pages with bigger motion or extra chrome.
+
+### Validation
+
+For `zh-paged-report-course`, the page is not ready unless all of these pass:
+
+1. Long pages can be read to the end.
+2. Switching pages resets internal scroll to top.
+3. Active dots always match the active page.
+4. Page transitions feel gentle, not abrupt.
+5. The course never falls back to a long scrolling article.
+6. The profile does not introduce filler content when the project is sparse.
+7. The shell remains identical even when page density changes.
+
+**Execution gate:**
+
+Use [`checklists/zh-paged-report-course.md`](/Users/mac/.codex/skills/codebase-to-course/checklists/zh-paged-report-course.md) as the required preflight and postflight gate for this profile.
+
+**Reusable motion preset:**
+
+Use [`presets/zh-paged-report-course-motion.css`](/Users/mac/.codex/skills/codebase-to-course/presets/zh-paged-report-course-motion.css) for page-switch transitions instead of inventing project-specific motion.
+
+**Reusable page recipe:**
+
+Use [`templates/zh-paged-report-course-pages.md`](/Users/mac/.codex/skills/codebase-to-course/templates/zh-paged-report-course-pages.md) as the fixed content-structure guide for opener, structure, data flow, and boundary pages.

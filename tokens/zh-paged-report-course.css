@@ -1,0 +1,160 @@
+/* Shared token layer for the zh-paged-report-course profile.
+   Import this first when the profile is active. */
+
+:root {
+  /* Typography */
+  --font-display: "SF Pro Display", "PingFang SC", -apple-system, BlinkMacSystemFont, sans-serif;
+  --font-body: "SF Pro Text", "PingFang SC", -apple-system, BlinkMacSystemFont, sans-serif;
+  --font-mono: "SF Mono", ui-monospace, "JetBrains Mono", Menlo, Consolas, monospace;
+
+  /* Layout */
+  --zh-course-max-width: 1180px;
+  --zh-course-content-width: 1040px;
+  --zh-course-reading-width: 880px;
+  --zh-course-shell-padding-x: 32px;
+  --zh-course-shell-padding-y: 30px;
+  --zh-course-shell-gap: 28px;
+  --zh-course-radius: 24px;
+  --zh-course-radius-sm: 16px;
+  --zh-course-nav-height: 54px;
+  --zh-course-page-head-width: 820px;
+  --zh-course-page-content-width: 860px;
+  --zh-course-page-grid-gap: 18px;
+  --zh-course-page-block-gap: 14px;
+  --zh-course-page-leading-gap: 14px;
+  --zh-course-page-sheet-surface: rgba(255, 255, 255, 0.72);
+  --zh-course-page-sheet-border: rgba(60, 60, 67, 0.08);
+  --zh-course-page-sheet-shadow: 0 1px 0 rgba(44, 42, 40, 0.02);
+
+  /* Typography stack */
+  --zh-course-hero-title-size: clamp(30px, 3.2vw, 42px);
+  --zh-course-hero-title-line: 1.12;
+  --zh-course-hero-title-weight: 560;
+  --zh-course-hero-title-width: 18ch;
+
+  --zh-course-page-title-size: clamp(28px, 3vw, 40px);
+  --zh-course-page-title-line: 1.12;
+  --zh-course-page-title-weight: 620;
+  --zh-course-page-title-width: 20ch;
+
+  --zh-course-module-title-size: var(--zh-course-page-title-size);
+  --zh-course-module-title-line: var(--zh-course-page-title-line);
+  --zh-course-module-title-weight: var(--zh-course-page-title-weight);
+  --zh-course-module-title-width: var(--zh-course-page-title-width);
+
+  --zh-course-body-size: 17px;
+  --zh-course-body-line: 1.66;
+  --zh-course-body-weight: 400;
+  --zh-course-body-color: rgba(29, 29, 31, 0.68);
+  --zh-course-body-width: 54ch;
+
+  --zh-course-lead-size: 17px;
+  --zh-course-lead-line: 1.66;
+  --zh-course-lead-weight: 400;
+  --zh-course-lead-color: rgba(29, 29, 31, 0.72);
+  --zh-course-lead-width: 54ch;
+
+  --zh-course-helper-size: 10px;
+  --zh-course-helper-line: 1.45;
+  --zh-course-helper-weight: 600;
+  --zh-course-helper-color: rgba(29, 29, 31, 0.34);
+  --zh-course-helper-width: 38ch;
+
+  --zh-course-snippet-intro-size: 17px;
+  --zh-course-snippet-intro-line: 1.66;
+  --zh-course-snippet-intro-weight: 400;
+  --zh-course-snippet-intro-color: rgba(29, 29, 31, 0.72);
+  --zh-course-snippet-intro-width: 54ch;
+
+  --zh-course-snippet-meta-size: 11px;
+  --zh-course-snippet-meta-line: 1.45;
+  --zh-course-snippet-meta-weight: 600;
+  --zh-course-snippet-meta-color: rgba(29, 29, 31, 0.48);
+  --zh-course-meta-pill-size: 13px;
+  --zh-course-meta-pill-weight: 500;
+  --zh-course-meta-pill-label-weight: 700;
+  --zh-course-meta-pill-bg: rgba(255, 255, 255, 0.94);
+  --zh-course-meta-pill-border: rgba(60, 60, 67, 0.08);
+
+  --zh-course-callout-title-size: 18px;
+  --zh-course-callout-title-line: 1.18;
+  --zh-course-callout-title-weight: 650;
+  --zh-course-callout-title-color: rgba(29, 29, 31, 0.88);
+
+  --zh-course-callout-body-size: 15px;
+  --zh-course-callout-body-line: 1.62;
+  --zh-course-callout-body-weight: 400;
+  --zh-course-callout-body-color: rgba(29, 29, 31, 0.68);
+
+  --zh-course-learn-list-size: 15px;
+  --zh-course-learn-list-line: 1.64;
+  --zh-course-learn-list-weight: 400;
+  --zh-course-learn-list-color: rgba(29, 29, 31, 0.70);
+
+  --zh-course-exp-line-size: 14px;
+  --zh-course-exp-line-height: 1.58;
+  --zh-course-exp-line-color: rgba(29, 29, 31, 0.64);
+  --zh-course-exp-line-width: 50ch;
+  --zh-course-exp-line-label-size: 12px;
+  --zh-course-exp-line-label-weight: 700;
+  --zh-course-exp-line-label-color: #2a7b9b;
+  --zh-course-exp-line-divider: rgba(60, 60, 67, 0.08);
+
+  --zh-course-page-number-size: clamp(34px, 4vw, 56px);
+  --zh-course-page-number-weight: 700;
+  --zh-course-page-number-color: rgba(29, 29, 31, 0.10);
+  --zh-course-page-number-offset: 8px;
+  --zh-course-page-number-rail-width: 84px;
+
+  /* Motion */
+  --zh-course-motion-duration: 220ms;
+  --zh-course-motion-easing: cubic-bezier(0.16, 1, 0.3, 1);
+  --zh-course-motion-distance: 10px;
+
+  /* Spacing */
+  --zh-course-space-1: 4px;
+  --zh-course-space-2: 8px;
+  --zh-course-space-3: 12px;
+  --zh-course-space-4: 16px;
+  --zh-course-space-5: 20px;
+  --zh-course-space-6: 24px;
+  --zh-course-space-8: 32px;
+  --zh-course-space-10: 40px;
+  --zh-course-space-12: 48px;
+  --zh-course-space-16: 64px;
+
+  /* Page shell */
+  --zh-course-page-width: min(var(--zh-course-content-width), calc(100vw - 40px));
+  --zh-course-page-inner-width: min(var(--zh-course-reading-width), calc(100vw - 84px));
+  --zh-course-page-gap: 18px;
+  --zh-course-page-card-shadow: none;
+  --zh-course-page-card-border: rgba(60, 60, 67, 0.06);
+
+  /* Block hierarchy */
+  --zh-course-block-primary-bg: rgba(255, 255, 255, 0.76);
+  --zh-course-block-primary-border: rgba(60, 60, 67, 0.08);
+  --zh-course-block-secondary-bg: rgba(255, 255, 255, 0.56);
+  --zh-course-block-secondary-border: rgba(60, 60, 67, 0.06);
+  --zh-course-block-tertiary-bg: rgba(255, 255, 255, 0.34);
+  --zh-course-block-tertiary-border: rgba(60, 60, 67, 0.04);
+
+  /* Accent system */
+  --zh-course-accent: #2a7b9b;
+  --zh-course-accent-soft: rgba(42, 123, 155, 0.10);
+  --zh-course-accent-line: rgba(42, 123, 155, 0.26);
+  --zh-course-success: #2d8b55;
+  --zh-course-success-soft: rgba(45, 139, 85, 0.10);
+  --zh-course-warning: #d36a1c;
+  --zh-course-warning-soft: rgba(211, 106, 28, 0.10);
+
+  /* Code syntax */
+  --zh-course-code-bg-start: #13161c;
+  --zh-course-code-bg-end: #0f1116;
+  --zh-course-code-text: #f5f7fa;
+  --zh-course-code-keyword: #6fb7ff;
+  --zh-course-code-function: #9fe870;
+  --zh-course-code-string: #ffd45e;
+  --zh-course-code-property: #c8ccd4;
+  --zh-course-code-operator: #e8edf4;
+  --zh-course-code-comment: rgba(200, 204, 212, 0.54);
+}
